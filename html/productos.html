@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,46 @@
     <title>Productos de Fake Store</title>
 
     <style>
-        /* Estilos para el contenedor de productos */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #333;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        
         #product-list {
             display: flex;
             flex-wrap: wrap;
@@ -15,7 +54,7 @@
             padding: 20px;
         }
 
-        /* Estilos para cada tarjeta de producto */
+        
         .product-card {
             background-color: #fff;
             border: 1px solid #e0e0e0;
@@ -32,18 +71,22 @@
             box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
         }
 
-        /* Estilos para las imágenes de los productos */
+        
         .product-card img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-        /* Estilos para el título del producto */
+        
         .product-card h2 {
             font-size: 18px;
             margin: 16px 0 8px;
             color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         
@@ -51,6 +94,9 @@
             font-size: 14px;
             color: #666;
             margin-bottom: 10px;
+            height: 50px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         
@@ -59,50 +105,72 @@
             font-weight: bold;
             color: #ff5722;
         }
+
+        
+        .product-card button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .product-card button:hover {
+            background-color: #0056b3;
+        }
     </style>
-    
 </head>
 <body>
 
-    <h1>Bienvenido al Dashboard</h1>
-<p>Has iniciado sesión correctamente.</p>
-<a href="carrito.html">Carrito</a>
-<a href="login.html">Cerrar sesión</a>
+    <header>
+        <h1>Bienvenido al Dashboard</h1>
+    </header>
 
-<h1>Productos</h1>
-<div id="products"></div>
+    <nav>
+        <a href="carrito.html">Carrito</a>
+        <a href="login.html">Cerrar sesión</a>
+    </nav>
 
-<script>
-    
-    function fetchProducts() {
-        fetch('https://fakestoreapi.com/products')
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Error en la red: ' + res.statusText);
-                }
-                return res.json(); 
-            })
-            .then(json => {
-                const productsDiv = document.getElementById('products');
-                json.forEach(product => {
-                    const productDiv = document.createElement('div');
-                    productDiv.className = 'product';
-                    productDiv.innerHTML = `
-                        <h2>${product.title}</h2>
-                        <p>${product.description}</p>
-                        <strong>Precio: $${product.price}</strong>
-                    `;
-                    productsDiv.appendChild(productDiv);
+    <h1 style="text-align: center;">Productos</h1>
+    <div id="product-list"></div>
+
+    <script>
+        function fetchProducts() {
+            fetch('https://fakestoreapi.com/products')
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Error en la red: ' + res.statusText);
+                    }
+                    return res.json(); 
+                })
+                .then(json => {
+                    const productsDiv = document.getElementById('product-list');
+                    json.forEach(product => {
+                        const productCard = document.createElement('div');
+                        productCard.className = 'product-card';
+                        productCard.innerHTML = `
+                            <img src="${product.image}" alt="${product.title}">
+                            <h2>${product.title}</h2>
+                            <p>${product.description}</p>
+                            <div class="price">Precio: $${product.price.toFixed(2)}</div>
+                            <button onclick="addToCart(${product.id})">Añadir al carrito</button>
+                        `;
+                        productsDiv.appendChild(productCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Hubo un problema con la solicitud Fetch:', error);
                 });
-            })
-            .catch(error => {
-                console.error('Hubo un problema con la solicitud Fetch:', error);
-            });
-    }
+        }
 
-    
-    fetchProducts();
-</script>
+        function addToCart(productId) {
+            alert(`Producto con ID ${productId} añadido al carrito.`);
+        }
+
+        fetchProducts();
+    </script>
 
 </body>
 </html>
